@@ -58,7 +58,7 @@ FROM (
 	ROW_NUMBER() OVER (PARTITION BY cst_id ORDER BY cst_create_date DESC) as flag_last
 	FROM bronze.crm_cust_info
 	WHERE cst_id IS NOT NULL) AS t
-WHERE flag_last = 1
+WHERE flag_last = 1;
 SET @t2 = NOW(6);
 SELECT CONCAT('>> Load Duration of crm_cust_info: ', ROUND(TIMESTAMPDIFF(MICROSECOND, @t1, @t2) / 1000000, 2), ' seconds') AS log;
 
@@ -93,7 +93,7 @@ CASE UPPER(TRIM(prd_line))
 END prd_line,
 CAST(prd_start_dt AS DATE) AS prd_start_dt,
 CAST(LEAD (prd_start_dt) OVER (PARTITION BY prd_key ORDER BY prd_start_dt) - INTERVAL 1 DAY AS DATE) AS prd_end_dt
-FROM bronze.crm_prd_info
+FROM bronze.crm_prd_info;
 SET @t2 = NOW(6);
 SELECT CONCAT('>> Load Duration of crm_prd_info: ', ROUND(TIMESTAMPDIFF(MICROSECOND, @t1, @t2) / 1000000, 2), ' seconds') AS log;
 
@@ -136,7 +136,7 @@ CASE WHEN sls_price IS NULL OR sls_price <= 0
 		 THEN sls_sales / NULLIF(sls_quantity, 0)
 		 ELSE sls_price
 END AS sls_price
-FROM bronze.crm_sales_details
+FROM bronze.crm_sales_details;
 SET @t2 = NOW(6);
 SELECT CONCAT('>> Load Duration of crm_sales_details: ', ROUND(TIMESTAMPDIFF(MICROSECOND, @t1, @t2) / 1000000, 2), ' seconds') AS log;
 
@@ -161,7 +161,7 @@ CASE WHEN UPPER(TRIM(gen)) IN ('F', 'FEMALE') THEN 'Female'
 		 WHEN UPPER(TRIM(gen)) IN ('M', 'MALE') THEN 'Male'
 		 ELSE 'n/a'
 END AS gen
-FROM bronze.erp_cust_az12
+FROM bronze.erp_cust_az12;
 SET @t2 = NOW(6);
 SELECT CONCAT('>> Load Duration of erp_cust_az12: ', ROUND(TIMESTAMPDIFF(MICROSECOND, @t1, @t2) / 1000000, 2), ' seconds') AS log;
 
@@ -178,7 +178,7 @@ CASE WHEN TRIM(cntry) = 'DE' THEN 'Germany'
 		 WHEN TRIM(cntry) = '' OR cntry IS NULL THEN 'n/a'
 		 ELSE TRIM(cntry)
 END AS cntry
-FROM bronze.erp_loc_a101
+FROM bronze.erp_loc_a101;
 SET @t2 = NOW(6);
 SELECT CONCAT('>> Load Duration of erp_loc_a101: ', ROUND(TIMESTAMPDIFF(MICROSECOND, @t1, @t2) / 1000000, 2), ' seconds') AS log;
 
@@ -193,7 +193,7 @@ id,
 cat,
 subcat,
 maintenance
-FROM bronze.erp_px_cat_g1v2
+FROM bronze.erp_px_cat_g1v2;
 
 
 SET @batch_end_time = NOW(6);
