@@ -41,7 +41,10 @@ LOAD DATA LOCAL INFILE 'C:/Users/USER/PycharmProjects/sql-data-warehouse/dataset
 INTO TABLE bronze.crm_prd_info
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
-IGNORE 1 ROWS;
+IGNORE 1 ROWS
+(prd_id, prd_key, prd_nm, prd_cost, prd_line, prd_start_dt, @prd_end_dt)
+    SET
+		prd_end_dt = NULLIF(@prd_end_dt, '');
 SET @t2 = NOW(6);
 SELECT CONCAT('>> Load Duration of prd_info: ', ROUND(TIMESTAMPDIFF(MICROSECOND, @t1, @t2) / 1000000, 2), ' seconds') AS log;
 
@@ -53,7 +56,9 @@ LOAD DATA LOCAL INFILE 'C:/Users/USER/PycharmProjects/sql-data-warehouse/dataset
 INTO TABLE bronze.crm_sales_details
 FIELDS TERMINATED BY ','
 LINES TERMINATED BY '\r\n'
-IGNORE 1 ROWS;
+IGNORE 1 ROWS
+(sls_ord_num, sls_prd_key, sls_cust_id, sls_order_dt, sls_ship_dt, sls_due_dt, sls_sales, sls_quantity, @sls_price) -- in case of empty string mysql will convert it to 0, we set it null --
+SET sls_price = NULLIF(@sls_price, '');
 SET @t2 = NOW(6);
 SELECT CONCAT('>> Load Duration of sales_details: ', ROUND(TIMESTAMPDIFF(MICROSECOND, @t1, @t2) / 1000000, 2), ' seconds') AS log;
 
